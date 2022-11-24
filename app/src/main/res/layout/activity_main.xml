@@ -45,19 +45,20 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
         android:orientation="vertical"
         app:behavior_hideable="false"
         app:behavior_peekHeight="90dp"
+        app:cardCornerRadius="20dp"
         app:cardBackgroundColor="#00ffffff"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/recommand_clothes_back_view_bg"
+            android:src="@drawable/clothes_info_bg"
             android:scaleType="fitXY"/>
 
         <LinearLayout

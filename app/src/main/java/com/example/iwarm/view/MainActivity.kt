@@ -8,21 +8,18 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewpager2.widget.ViewPager2
 import com.example.iwarm.adapter.TabRecyclerAdapter
 import com.example.iwarm.data.response.WeatherListResponse
-import com.example.iwarm.data.response.WeatherResponse
 import com.example.iwarm.databinding.ActivityMainBinding
 import com.example.iwarm.viewmodel.WeatherViewModel
 import com.google.android.gms.location.*
-import java.lang.Math.round
-import java.text.SimpleDateFormat
-import java.util.*
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -52,6 +49,38 @@ class MainActivity : AppCompatActivity() {
         if (checkPermissionForLocation(this)) {
             startLocationUpdates()
         }
+
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
+        val radius = binding.bottomSheet.radius
+
+        bottomSheetBehavior.addBottomSheetCallback(object :BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    supportFragmentManager.beginTransaction()
+                        .add(com.example.iwarm.R.id.bottom_sheet, SuggestClothesFragment())
+                        .commit()
+                } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    SuggestClothesFragment().apply {
+                        arguments = Bundle().apply {
+                            putBoolean("down", true)
+                        }
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                if (slideOffset >= 0) {
+                    // radius 를 줄임
+                    binding.bottomSheet.radius = radius - (radius * slideOffset)
+                    // 화살표를 펼치면서 돌아가게
+                    binding.arrowImage.rotation = (1-slideOffset) * 180F
+                    // 글자가 점점 사라지게
+                    binding.recommendClothes.alpha = 1 - slideOffset * 2.3F
+                    // 내용의 투명도
+                    binding.fragmentFrame.alpha = Math.min(slideOffset * 2F, 1F)
+                }
+            }
+        })
     }
 
     private fun getWeather() {
@@ -125,6 +154,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Log.d("ttt", "onRequestPermissionsResult() _ 권한 허용 거부")
                 Toast.makeText(this, "권한이 없어 해당 기능을 실행할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                finish()
             }
         }
     }
