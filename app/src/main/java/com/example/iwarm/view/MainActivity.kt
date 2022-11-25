@@ -3,6 +3,8 @@ package com.example.iwarm.view
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
@@ -12,14 +14,18 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.location.LocationManagerCompat.getCurrentLocation
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.iwarm.adapter.TabRecyclerAdapter
+import com.example.iwarm.data.FinishFragment
 import com.example.iwarm.data.response.WeatherListResponse
 import com.example.iwarm.databinding.ActivityMainBinding
 import com.example.iwarm.viewmodel.WeatherViewModel
 import com.google.android.gms.location.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -50,6 +56,21 @@ class MainActivity : AppCompatActivity() {
             startLocationUpdates()
         }
 
+        getCurrentTime()
+        setBottomSheetBehavior()
+    }
+
+    // 현재 시간을 가져옵니다.
+    private fun getCurrentTime() {
+        val now = System.currentTimeMillis()
+        val date = Date(now)
+        val format = SimpleDateFormat("HH:mm a", Locale.KOREA)
+
+        binding.currentTime.text = format.format(date)
+    }
+
+    // bottom sheet 를 설정해준다.
+    private fun setBottomSheetBehavior() {
         val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
         val radius = binding.bottomSheet.radius
 
@@ -59,12 +80,6 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .add(com.example.iwarm.R.id.bottom_sheet, SuggestClothesFragment())
                         .commit()
-                } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    SuggestClothesFragment().apply {
-                        arguments = Bundle().apply {
-                            putBoolean("down", true)
-                        }
-                    }
                 }
             }
 
@@ -127,6 +142,12 @@ class MainActivity : AppCompatActivity() {
         lot =  mLastLocation.longitude.toString() // 갱신 된 경도
 
         getWeather()
+
+        // 현재 지역을 가져옵니다
+        val gcd = Geocoder(baseContext, Locale.getDefault())
+        val address: List<Address> = gcd.getFromLocation(mLastLocation.latitude, mLastLocation.longitude, 1) as List<Address>
+        if (address.isNotEmpty())   // address 가 비어있지 않다면
+            binding.areaName.text = address[0].adminArea    // 거주 area 를 가져온다.
     }
 
     // 위치 권한이 있는지 확인하는 메서드

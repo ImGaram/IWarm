@@ -7,6 +7,8 @@
     android:background="@drawable/clothes_info_bg"
     tools:context=".view.SuggestClothesFragment">
 
-
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hello_blank_fragment"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

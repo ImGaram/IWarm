@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.iwarm.R
+import com.example.iwarm.data.FinishFragment
 
 class SuggestClothesFragment : Fragment() {
     override fun onCreateView(
@@ -14,11 +15,6 @@ class SuggestClothesFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
-        Log.d("TAG", "onCreateView: ${arguments?.getBoolean("down")}")
-        if (arguments?.getBoolean("down") == true) {
-            Log.d("TAG", "onCreateView: ${arguments?.getBoolean("down")}")
-        }
-
         return inflater.inflate(R.layout.fragment_suggest_clothes, container, false)
     }
 }
