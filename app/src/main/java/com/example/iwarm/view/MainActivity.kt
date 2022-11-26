@@ -24,8 +24,10 @@ import com.google.android.gms.location.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import java.text.SimpleDateFormat
 import java.util.*
+import com.example.iwarm.R
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var temp: String
     private lateinit var binding: ActivityMainBinding
     private val viewModel by lazy {
         ViewModelProvider(this, WeatherViewModel.Factory(
@@ -76,7 +78,11 @@ class MainActivity : AppCompatActivity() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     supportFragmentManager.beginTransaction()
-                        .add(com.example.iwarm.R.id.bottom_sheet, SuggestClothesFragment())
+                        .add(R.id.bottom_sheet, SuggestClothesFragment().apply {
+                            arguments = Bundle().apply {
+                                putFloat("temp", Math.round(temp.toDouble() * 1) /1f)
+                            }
+                        })
                         .commit()
                 }
             }
@@ -85,10 +91,6 @@ class MainActivity : AppCompatActivity() {
                 if (slideOffset >= 0) {
                     // radius 를 줄임
                     binding.bottomSheet.radius = radius - (radius * slideOffset)
-                    // 화살표를 펼치면서 돌아가게
-                    binding.arrowImage.rotation = (1-slideOffset) * 180F
-                    // 글자가 점점 사라지게
-                    binding.recommendClothes.alpha = 1 - slideOffset * 2.3F
                     // 내용의 투명도
                     binding.fragmentFrame.alpha = Math.min(slideOffset * 2F, 1F)
                 }
@@ -102,6 +104,9 @@ class MainActivity : AppCompatActivity() {
                 val list = mutableListOf<WeatherListResponse>()
                 list.add(response.list!![0])
                 list.add(response.list[7])
+
+                temp = "${response.list[0].main.temp-273}"
+
                 val adapter = TabRecyclerAdapter(list, this)
                 binding.tabRecyclerView.adapter = adapter
                 binding.tabRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
