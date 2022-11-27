@@ -1,6 +1,8 @@
 package com.example.iwarm.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -8,6 +10,8 @@ import com.example.iwarm.R
 import com.example.iwarm.data.response.Weather2Response
 import com.example.iwarm.data.response.WeatherListResponse
 import com.example.iwarm.databinding.TabRecyclerItemBinding
+import com.example.iwarm.view.MainActivity
+import com.example.iwarm.view.WeeklyWeatherActivity
 import java.lang.Math.round
 import java.text.SimpleDateFormat
 import java.util.*
@@ -25,6 +29,7 @@ class TabRecyclerAdapter(private val list: List<WeatherListResponse>, private va
     override fun getItemCount(): Int = list.size
 
     inner class PagerViewHolder(private val item: TabRecyclerItemBinding): RecyclerView.ViewHolder(item.root) {
+        @SuppressLint("SetTextI18n")
         fun bind(weatherListResponse: WeatherListResponse, position: Int) {
             val temp = weatherListResponse.main.temp-273
             item.currentDate.text = getDate("yyyy.MM.dd E", position)
@@ -32,6 +37,9 @@ class TabRecyclerAdapter(private val list: List<WeatherListResponse>, private va
             item.humidityPercent.text = weatherListResponse.main.humidity.toString() + "%"
             item.windSpeed.text = weatherListResponse.wind.speed.toString() + "m/s"
 
+            item.weatherLayout.setOnClickListener {
+                context.startActivity(Intent(context, WeeklyWeatherActivity::class.java))
+            }
             weatherListResponse.weather.map {
                 setImage(it, item, position)
             }
