@@ -10,13 +10,13 @@ import com.example.iwarm.R
 import com.example.iwarm.data.response.Weather2Response
 import com.example.iwarm.data.response.WeatherListResponse
 import com.example.iwarm.databinding.TabRecyclerItemBinding
-import com.example.iwarm.view.MainActivity
 import com.example.iwarm.view.WeeklyWeatherActivity
 import java.lang.Math.round
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
-class TabRecyclerAdapter(private val list: List<WeatherListResponse>, private val context: Context): RecyclerView.Adapter<TabRecyclerAdapter.PagerViewHolder>() {
+class TabRecyclerAdapter(private val list: List<WeatherListResponse>, private val context: Context, private val res: List<WeatherListResponse> ?): RecyclerView.Adapter<TabRecyclerAdapter.PagerViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PagerViewHolder {
         val binding = TabRecyclerItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PagerViewHolder(binding)
@@ -33,12 +33,13 @@ class TabRecyclerAdapter(private val list: List<WeatherListResponse>, private va
         fun bind(weatherListResponse: WeatherListResponse, position: Int) {
             val temp = weatherListResponse.main.temp-273
             item.currentDate.text = getDate("yyyy.MM.dd E", position)
-            item.temperature.text = (round(temp * 1) /1f).toString() + "°c"
+            item.temperature.text = (round(temp * 1) /1f).toString() + "°"
             item.humidityPercent.text = weatherListResponse.main.humidity.toString() + "%"
             item.windSpeed.text = weatherListResponse.wind.speed.toString() + "m/s"
 
             item.weatherLayout.setOnClickListener {
-                context.startActivity(Intent(context, WeeklyWeatherActivity::class.java))
+                context.startActivity(Intent(context, WeeklyWeatherActivity::class.java)
+                    .putExtra("list", res as ArrayList<WeatherListResponse>))
             }
             weatherListResponse.weather.map {
                 setImage(it, item, position)
