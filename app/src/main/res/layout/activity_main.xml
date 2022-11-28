@@ -9,6 +9,16 @@
     android:background="@drawable/main_page_bg"
     tools:context=".view.MainActivity">
 
+    <ProgressBar
+        android:id="@+id/api_call_loading_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="#9087D4"
+        android:layout_gravity="center"
+        android:visibility="visible"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,7 +28,6 @@
             android:id="@+id/area_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="지역 이름"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:textSize="30sp"
@@ -29,7 +38,6 @@
             android:id="@+id/current_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="현재 시간"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:layout_gravity="center"/>

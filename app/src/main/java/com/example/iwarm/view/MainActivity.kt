@@ -100,6 +100,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getWeather() {
         viewModel.getWeatherLiveData.observe(this) { response ->
+
             if (response != null) {
                 val list = mutableListOf<WeatherListResponse>()
                 list.add(response.list!![0])
@@ -110,6 +111,8 @@ class MainActivity : AppCompatActivity() {
                 val adapter = TabRecyclerAdapter(list, this, response.list)
                 binding.tabRecyclerView.adapter = adapter
                 binding.tabRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+                binding.apiCallLoadingProgress.visibility = View.INVISIBLE
             } else {
                 Log.d("TAG", "getWeather: fail")
             }
