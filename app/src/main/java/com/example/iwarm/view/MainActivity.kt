@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
 
                 temp = "${response.list[0].main.temp-273}"
 
-                val adapter = TabRecyclerAdapter(list, this)
+                val adapter = TabRecyclerAdapter(list, this, response.list)
                 binding.tabRecyclerView.adapter = adapter
                 binding.tabRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
             } else {
